@@ -103,12 +103,11 @@ describe('Basic user flow for Website', () => {
       }
     }
     const cartCount = await page.$eval('#cart-count', el=>el.textContent);
-    console.log(`Cart count after for loop: ${cartCount}`);
     expect(cartCount).toBe("20");
   }, 20000);
 
   // Check to make sure that after you reload the page it remembers all of the items in your cart
-  it.skip('Checking number of items in cart on screen after reload', async () => {
+  it('Checking number of items in cart on screen after reload', async () => {
     console.log('Checking number of items in cart on screen after reload...');
 
     /**
@@ -118,11 +117,23 @@ describe('Basic user flow for Website', () => {
      * Also check to make sure that #cart-count is still 20
      * Remember to remove the .skip from this it once you are finished writing this test.
      */
+    await page.reload();
 
-  }, 10000);
+    const prodItems = await page.$$('product-item');
+
+    for(let item of prodItems){
+      const shadowRoot = await item.getProperty('shadowRoot');
+      const button = await shadowRoot.$('button');
+      const buttonText = await (await button.getProperty('innerText')).jsonValue();
+      expect(buttonText).toBe("Remove from Cart");
+    }
+    const cartCount = await page.$eval('#cart-count', el=>el.textContent);
+    expect(cartCount).toBe("20");
+    
+  }, 20000);
 
   // Check to make sure that the cart in localStorage is what you expect
-  it.skip('Checking the localStorage to make sure cart is correct', async () => {
+  it('Checking the localStorage to make sure cart is correct', async () => {
 
     /**
      **** TODO - STEP 5 **** 
@@ -130,7 +141,10 @@ describe('Basic user flow for Website', () => {
        '[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]', check to make sure it is
      * Remember to remove the .skip from this it once you are finished writing this test.
      */
-
+    const cart = await page.evaluate(()=>{
+      return localStorage.getItem('cart');
+    });
+    expect(cart).toBe('[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]');
   });
 
   // Checking to make sure that if you remove all of the items from the cart that the cart
