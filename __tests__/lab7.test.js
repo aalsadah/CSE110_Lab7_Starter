@@ -68,12 +68,12 @@ describe('Basic user flow for Website', () => {
      * Remember to remove the .skip from this it once you are finished writing this test.
      */
     const prodItem = await page.$('product-item');
-    const shadowRoot = await prodItem.getProperty("shadowRoot");
-    const buttonHandle = await shadowRoot.$("button");
+    const shadowRoot = await prodItem.getProperty('shadowRoot');
+    const buttonHandle = await shadowRoot.$('button');
 
     await buttonHandle.click();
 
-    const innerText = await buttonHandle.getProperty("innerText");
+    const innerText = await buttonHandle.getProperty('innerText');
     const text = await innerText.jsonValue();
 
     expect(text).toBe("Remove from Cart");
@@ -82,18 +82,30 @@ describe('Basic user flow for Website', () => {
 
   // Check to make sure that after clicking "Add to Cart" on every <product-item> that the Cart
   // number in the top right has been correctly updated
-  it.skip('Checking number of items in cart on screen', async () => {
+  it('Checking number of items in cart on screen', async () =>{
     console.log('Checking number of items in cart on screen...');
 
     /**
-     **** TODO - STEP 3 **** 
+     **** TODO - STEP 3 **** DONE
      * Query select all of the <product-item> elements, then for every single product element
        get the shadowRoot and query select the button inside, and click on it.
      * Check to see if the innerText of #cart-count is 20
      * Remember to remove the .skip from this it once you are finished writing this test.
      */
+    const prodItems = await page.$$('product-item');
 
-  }, 10000);
+    for(let item of prodItems){
+      const shadowRoot = await item.getProperty('shadowRoot');
+      const button = await shadowRoot.$('button');
+      const buttonText = await (await button.getProperty('innerText')).jsonValue();
+      if(buttonText === "Add to Cart"){
+        await button.click();
+      }
+    }
+    const cartCount = await page.$eval('#cart-count', el=>el.textContent);
+    console.log(`Cart count after for loop: ${cartCount}`);
+    expect(cartCount).toBe("20");
+  }, 20000);
 
   // Check to make sure that after you reload the page it remembers all of the items in your cart
   it.skip('Checking number of items in cart on screen after reload', async () => {
