@@ -7,7 +7,13 @@
 
 #### 2) Would you use an end to end test to check if a function is returning the correct output? (yes/no)
 * no 
+#### 3) What is the difference between navigation and snapshot mode?
+* Navigation mode analyzes the performance of a page at its initial load, while snapshot mode analyzes page after its been ineracted with at a specific point. 
 
+#### 4) Name three things we could do to improve the CSE 110 shop site based on the Lighthouse results.
+* 1. Add html `lang` attribute for accessibility.
+* 2. Add meta description to document.
+* 3. Add a `<meta name="viewport">` tag with `width` or `initial scale`
   
 
 
